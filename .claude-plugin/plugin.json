@@ -1,0 +1,8 @@
+{
+  "name": "sparker-camp",
+  "version": "0.1.0",
+  "description": "Camp session binding and durable conversation collection",
+  "author": {
+    "name": "Delta Society"
+  }
+}

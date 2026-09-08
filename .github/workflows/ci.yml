@@ -14,3 +14,16 @@ jobs:
         with:
           node-version: 22
       - run: npm test
+
+  camp-portability:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test tests/camp-*.test.mjs
