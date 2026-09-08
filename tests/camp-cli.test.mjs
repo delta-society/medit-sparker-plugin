@@ -43,7 +43,12 @@ test('new unbound host session resumes old durable pending without collecting th
   const child=spawnSync(process.execPath,[resolve('camp/cli.mjs'),'hook'],{cwd:root,env:{...process.env,CAMP_SPOOL_DIR:spool,CAMP_TEST_LOOPBACK:'1'},input:JSON.stringify({session_id:randomUUID(),cwd:root,transcript_path:fresh,hook_event_name:'SessionStart'}),encoding:'utf8',timeout:10000});assert.equal(child.status,0,child.stderr);
   const deadline=Date.now()+15000;while(q.pending().length&&Date.now()<deadline)await delay(50);assert.equal(q.pending().length,0);assert.equal(q.db.prepare('SELECT count(*) n FROM bindings').get().n,1);
   while(q.db.prepare("SELECT count(*) n FROM sqlite_master WHERE name='worker'").get().n&&q.db.prepare('SELECT count(*) n FROM worker').get().n&&Date.now()<deadline)await delay(50);
- }finally{q.close();if(server){server.closeAllConnections();await new Promise(r=>server.close(r));}rmSync(root,{recursive:true,force:true});}
+ }finally{
+  q.close();if(server){server.closeAllConnections();await new Promise(r=>server.close(r));}
+  // The detached worker releases its lease before Windows releases its cwd.
+  // Retry only cleanup; delivery and session-isolation assertions stay strict.
+  await awaitFs.promises.rm(root,{recursive:true,force:true,maxRetries:10,retryDelay:100});
+ }
 });
 
 test('host cwd alias and canonical process cwd resolve to the same explicit session',()=>{

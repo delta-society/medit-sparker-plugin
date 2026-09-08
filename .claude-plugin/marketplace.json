@@ -5,12 +5,22 @@
   },
   "plugins": [
     {
+      "name": "sparker-discovery",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/delta-society/medit-sparker-discovery.git",
+        "path": "plugin",
+        "sha": "b580234ea123cb4648482d3a47c8159082995425"
+      },
+      "description": "온보딩·Week 1·기획서·선택형 PDF·과제 제출 준비 (0.6.1)"
+    },
+    {
       "name": "sparker-camp",
       "source": "./",
       "description": "Camp session binding and durable conversation collection"
     }
   ],
   "metadata": {
-    "description": "Sparker Camp participant tools"
+    "description": "AI Sparker 참가자 공통 설치 창구 — Discovery 교육과 Camp 기록"
   }
 }

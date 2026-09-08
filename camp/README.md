@@ -9,12 +9,7 @@
 - 콘솔의 `migrations/005-camp-telemetry.sql`을 영속 PostgreSQL/Supabase에 적용하고, 별도 RPC 토큰의 SHA-256을 비공개 auth 테이블에 설정한다. DB 소유자 또는 승인된 배포자가 실행한다. 로컬 PGlite 합성 테스트는 운영 저장소 활성화 증거가 아니다.
 - 이 브랜치가 배포되기 전 원격 main의 설치 명령으로 Camp 기능이 제공된다고 안내하지 않는다.
 
-배포된 마켓플레이스 설치:
-
-```sh
-claude plugin marketplace add https://github.com/delta-society/medit-sparker-plugin.git
-claude plugin install sparker-camp@sparker
-```
+두 플러그인 설치·업데이트는 [공통 설치 안내](../README.md)를 따른다.
 
 운영진이 설치한 플러그인 경로에서 `node camp/connect.mjs https://참가자앱주소`를 실행한다. 참가자는 로그인한 앱의 **내 계정·설정 → 캠프 대화 기록 연결**에서 만든 코드를 입력한다. 코드는 stdin으로 받고 OS 명령행 인자에 넣지 않는다. 연결 코드는 10분·한 번 사용, 기기 인증은 서버의 90일 초기값이며 계정 비활성화·재설정으로 회수된다.
 
