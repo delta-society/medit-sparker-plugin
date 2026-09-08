@@ -8,6 +8,7 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {spawn} from 'node:child_process';
 import {Queue} from './queue.mjs';
 import {suggestHelp} from './help.mjs';
+import {participantStatus} from './status.mjs';
 import {enroll,flush} from './transport.mjs';
 const directory=process.env.CAMP_SPOOL_DIR||join(homedir(),'.sparker-camp');
 const command=process.argv[2],args=process.argv.slice(3);
@@ -21,11 +22,12 @@ try{
   queue=new Queue(directory);
   queue.db.exec('CREATE TABLE IF NOT EXISTS host_sessions(session TEXT PRIMARY KEY,cwd TEXT NOT NULL,transcript TEXT NOT NULL); CREATE TABLE IF NOT EXISTS host_agents(session TEXT NOT NULL,agent TEXT NOT NULL,binding TEXT NOT NULL,ended INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(session,agent)); CREATE TABLE IF NOT EXISTS pending_agent_stops(session TEXT NOT NULL,agent TEXT NOT NULL,binding TEXT NOT NULL,path TEXT NOT NULL,PRIMARY KEY(session,agent))');
   if(command==='start'){
-   const [session,week,phase]=args;
+   const [session,week,requestedPhase]=args;
+   const phase=({'수업':'class','과제':'homework'})[requestedPhase]||requestedPhase;
    const host=queue.db.prepare('SELECT * FROM host_sessions WHERE session=? AND cwd=?').get(session,realpathSync(process.cwd()));
    if(!host)throw Error('Host session hook has not registered the transcript');
-   const binding=queue.bind({session,cwd:process.cwd(),week:Number(week),phase,transcript:host.transcript});
-   console.log(JSON.stringify({binding_id:binding,local_binding:true,server_received:false}));wake();
+   queue.bind({session,cwd:process.cwd(),week:Number(week),phase,transcript:host.transcript});
+   console.log(JSON.stringify(participantStatus(queue,directory,session,process.cwd())));wake();
   }else if(command==='hook'){
    const input=readFileSync(0,'utf8');if(Buffer.byteLength(input)>1048576)throw Error('Hook too large');
    const event=JSON.parse(input);
@@ -80,12 +82,14 @@ try{
   }else if(command==='help'){
    const [session,issue,attempts,severity]=args,binding=queue.binding(session,process.cwd());
    console.log(JSON.stringify(binding?suggestHelp(queue,binding.id,{issue,attempts:Number(attempts),serious:severity==='serious'}):{suggest:false}));
+  }else if(command==='participant-status'){
+   console.log(JSON.stringify(participantStatus(queue,directory,args[0],process.cwd())));
   }else if(command==='status'){
    console.log(JSON.stringify({bindings:queue.db.prepare('SELECT id,session,closed,error FROM bindings').all(),pending_chunks:queue.db.prepare('SELECT count(*) AS n FROM chunks WHERE receipt IS NULL').get().n}));
   }else throw Error('Usage: camp start SESSION WEEK class|homework; enroll ORIGIN < code; status; worker');
  }
 }catch(error){
  // Hooks must never stop Claude or print transcript/token values.
- if(command!=='hook'&&command!=='worker'){console.error('캠프 기록 연결을 확인하지 못했습니다. 로컬 기록을 보관하고 운영자에게 연결 상태 확인을 요청해 주세요.');process.exitCode=1;}
+ if(command!=='hook'&&command!=='worker'){console.error(error.message==='Session already bound; start a new session'?'이 대화는 다른 활동에 연결돼 있어요. 진행 내용을 저장한 뒤 /clear로 새 대화를 열고 원하는 활동을 시작해 주세요.':error.message==='Host session hook has not registered the transcript'?'아직 이 대화의 기록 준비를 확인하지 못했어요. Claude Code를 다시 열어 시작해 주세요. 계속 안 되면 운영진에게 도움을 요청해 주세요.':'캠프 기록 상태를 확인하지 못했어요. 실습은 계속할 수 있어요. 운영진에게 계정 연결과 기록 상태를 확인해 달라고 요청해 주세요.');process.exitCode=1;}
  else {try{mkdirSync(directory,{recursive:true,mode:0o700});writeFileSync(join(directory,'recovery-needed'),new Date().toISOString(),{mode:0o600});}catch{}}
 }finally{queue?.close();}

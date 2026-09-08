@@ -14,7 +14,9 @@ test('real CLI hooks register metadata only, explicit start excludes history, un
  const hook=name=>run(['hook'],JSON.stringify({session_id:session,cwd:root,transcript_path:transcript,hook_event_name:name}));
  try{
   writeFileSync(transcript,'BEFORE START\n');hook('SessionStart');q=new Queue(spool);assert.equal(q.pending().length,0);q.close();q=null;
-  run(['start',session,'1','homework']);appendFileSync(transcript,'AFTER START\n');hook('Stop');
+  const started=JSON.parse(run(['start',session,'1','homework']));assert.equal(started.state,'connection_needed');assert.equal(started.server_received,false);
+  assert.equal(JSON.parse(run(['participant-status',session])).week,1);
+  assert.equal(JSON.parse(run(['participant-status',randomUUID()])).state,'not_started');appendFileSync(transcript,'AFTER START\n');hook('Stop');
   run(['hook'],JSON.stringify({session_id:randomUUID(),cwd:root,transcript_path:transcript,hook_event_name:'Stop'}));
   appendFileSync(transcript,'FINAL BYTES\n');hook('SessionEnd');q=new Queue(spool);const chunks=q.pending().map(c=>JSON.parse(c.payload));assert.equal(chunks.map(c=>Buffer.from(c.data_base64,'base64').toString()).join(''),'AFTER START\nFINAL BYTES\n');assert.equal(chunks.at(-1).final,true);assert.equal(q.db.prepare('SELECT closed FROM bindings').get().closed,1);
  }finally{q?.close();rmSync(root,{recursive:true,force:true});}
@@ -58,5 +60,24 @@ test('host cwd alias and canonical process cwd resolve to the same explicit sess
  const env={...process.env,CAMP_SPOOL_DIR:spool},hook=spawnSync(process.execPath,[cli,'hook'],{cwd:actual,env,input:JSON.stringify({session_id:session,cwd:alias,transcript_path:transcript,hook_event_name:'SessionStart'}),encoding:'utf8'});assert.equal(hook.status,0);
  const start=spawnSync(process.execPath,[cli,'start',session,'1','class'],{cwd:realpathSync(actual),env,encoding:'utf8'});assert.equal(start.status,0,start.stderr);
  const q=new Queue(spool);assert.equal(q.db.prepare('SELECT count(*) n FROM bindings').get().n,1);q.close();
+ }finally{rmSync(root,{recursive:true,force:true});}
+});
+
+
+test('CLI accepts explicit Korean activity aliases but rejects invalid phase and switching',()=>{
+ const root=mkdtempSync(join(tmpdir(),'camp-phase-')),spool=join(root,'spool'),transcript=join(root,'main'),cli=resolve('camp/cli.mjs');
+ const run=(args,input)=>spawnSync(process.execPath,[cli,...args],{cwd:root,env:{...process.env,CAMP_SPOOL_DIR:spool},input,encoding:'utf8',timeout:10000});
+ try{
+  writeFileSync(transcript,'');
+  for(const [alias,expected] of [['수업','class'],['과제','homework']]){
+   const session=randomUUID();
+   assert.equal(run(['hook'],JSON.stringify({session_id:session,cwd:root,transcript_path:transcript,hook_event_name:'SessionStart'})).status,0);
+   const started=run(['start',session,'1',alias]);assert.equal(started.status,0,started.stderr);assert.equal(JSON.parse(started.stdout).phase,expected);
+   assert.equal(run(['start',session,'1',expected]).status,0);
+   const switchResult=run(['start',session,'1',expected==='class'?'과제':'수업']);assert.equal(switchResult.status,1);assert.match(switchResult.stderr,/다른 활동/);
+  }
+  const invalid=randomUUID();run(['hook'],JSON.stringify({session_id:invalid,cwd:root,transcript_path:transcript,hook_event_name:'SessionStart'}));
+  assert.equal(run(['start',invalid,'1','쉬는시간']).status,1);
+  const q=new Queue(spool);assert.equal(q.db.prepare('SELECT count(*) n FROM bindings').get().n,2);q.close();
  }finally{rmSync(root,{recursive:true,force:true});}
 });

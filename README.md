@@ -1,22 +1,10 @@
-# AI Sparker — 참가자 설치 안내
+# AI Sparker — 시작하기
 
-교육 실습과 캠프 기록에 필요한 두 플러그인을 한 곳에서 설치합니다.
-
-| 플러그인 | 하는 일 |
-|---|---|
-| `sparker-discovery` 0.6.1 | 온보딩·Week 1 실습, 업무 기획서, 선택형 PDF, 과제 제출 파일 준비 |
-| `sparker-camp` 0.1.1 | 회차 연결 이후 대화 기록 보관·자동 전송, 반복 막힘 도움 안내 |
-
-## 준비물
-
-- 실행 가능한 Claude Code와 자신의 로컬 실습 폴더
-- Node.js 22.13 이상: Camp 기록에 필요
-- Python 3.9 이상: 기획서 저장·제출 파일 준비에 필요
-- Chrome 또는 Edge: PDF를 만들 때만 필요
+Claude와 작은 작업을 해보고, 내 업무에 쓸 기획서를 만듭니다. 처음 시작하거나 지난 실습을 이어갈 때 같은 명령을 쓰면 됩니다.
 
 ## 설치
 
-Claude Code 대화창에 한 줄씩 입력하세요.
+Claude Code 대화창에 아래 세 줄을 한 줄씩 입력하세요.
 
 ```text
 /plugin marketplace add delta-society/medit-sparker-plugin
@@ -24,17 +12,36 @@ Claude Code 대화창에 한 줄씩 입력하세요.
 /plugin install sparker-camp@sparker
 ```
 
-설치 후 Claude Code를 종료하고 자신의 실습 폴더에서 다시 실행하세요. ZIP 다운로드나 Discovery 저장소의 별도 마켓플레이스 등록은 필요 없습니다.
+설치 후 Claude Code를 종료하고 자신의 실습 폴더에서 다시 실행하세요.
 
-## 캠프 연결과 첫 실습
+## 시작하거나 이어가기
 
-1. [참가자 앱](https://leaderboard-production-eac2.up.railway.app/)에 로그인합니다. **내 계정·설정 → 캠프 대화 기록 연결**에서 연결 코드를 만들고 운영진과 함께 [계정 연결](camp/README.md)을 완료합니다. 코드는 대화창에 붙이지 않고 연결 프로그램의 입력창에 입력합니다.
-2. Claude Code 대화창에서 이번 회차를 명시적으로 시작합니다. 1주차 수업은 `/sparker-camp:camp-start 1 class`, 과제는 `/sparker-camp:camp-start 1 homework`입니다.
-3. 처음이면 `/sparker-discovery:onboarding`, 1주차 실습은 `/sparker-discovery:week1`을 실행합니다.
+```text
+/sparker-camp:start
+```
 
-주차나 수업/과제를 바꿀 때는 `/clear`로 새 대화를 만든 뒤 해당 회차를 시작합니다. 기존 대화를 재개할 때는 기존 연결을 유지합니다. 설치만으로 계정 연결이나 서버 수신이 완료되지는 않습니다. 연결에 문제가 있어도 실습은 계속하고 운영진에게 확인합니다.
+수업인지 과제인지 확인하고 필요한 준비부터 안내합니다. 이전에 한 실습은 저장된 진행 정보를 참고해 이어갑니다. “처음이에요”, “이어서 할게요”, “기획만 할게요”처럼 말해도 됩니다.
 
-기획서와 제출 파일은 자신의 실습 폴더에 저장됩니다. 검토한 파일은 참가자 앱의 해당 회차에 직접 업로드합니다. **과제 ZIP에 세션 원본을 넣는 선택과 Camp 대화 기록 연결은 별개**입니다. ZIP 제출이 자동 수집을 대신하거나 수집 범위를 바꾸지는 않습니다.
+계정 연결이 필요하면 [참가자 앱](https://leaderboard-production-eac2.up.railway.app/)에서 코드를 만듭니다. 안내된 연결 프로그램을 **터미널**에서 열고 코드를 입력하세요. 코드는 Claude 대화창에 붙이지 않습니다. 자세한 순서는 [캠프 연결 안내](camp/PARTICIPANT.md)를 따릅니다.
+
+## 실습에서 할 일
+
+**작은 작업 해보기 → 반복 요청 만들기 → 외부 자료 연결 알아보기 → 내 업무 기획하기 → 과제 제출하기**
+
+한 번에 한 행동씩 안내합니다. 어려우면 “쉽게 설명해줘”, 시간이 부족하면 “건너뛰기”라고 말하세요. 추가 기능 체험은 원할 때 진행합니다.
+
+기획서를 확인한 뒤 “제출 준비해줘”라고 말하면 제출 ZIP을 만듭니다. 파일을 검토하고 참가자 앱의 같은 회차에 직접 올리세요. 파일 준비와 실제 제출은 별개입니다. PDF는 읽거나 공유하기 위한 선택 사항이며 제출 ZIP과 별도로 보관합니다.
+
+## 필요한 준비물
+
+| 준비물 | 언제 필요한가요? |
+|---|---|
+| Claude Code와 자신의 실습 폴더 | 시작할 때 |
+| Node.js 22.13 이상 | Camp 도구를 실행할 때 |
+| Python 3.9 이상 | 기획서 저장·제출 파일 준비, 설치 전에도 첫 대화·Skill 체험 가능 |
+| Chrome 또는 Edge | PDF를 만들 때만 |
+
+준비물 설치가 막히면 강사에게 알려주세요. 회사 보안 설정을 임의로 바꿀 필요는 없습니다.
 
 ## 업데이트
 
@@ -46,9 +53,9 @@ claude plugin update sparker-discovery@sparker
 claude plugin update sparker-camp@sparker
 ```
 
-## 상세 안내
+## 더 알아보기
 
-- [Discovery 실습·기획서 사용법](https://github.com/delta-society/medit-sparker-discovery/blob/main/docs/plugin-guide.md)
-- [Camp 계정 연결·기록 범위·복구](camp/README.md)
-- [별도 교육 지원 센서](sensor/README.md): 운영진이 안내한 경우에만 설치
-- [운영자 배포 기준과 검증](docs/distribution.md)
+- [캠프 계정 연결·기록 상태·수업과 과제 전환](camp/PARTICIPANT.md)
+- [기획서·과제 제출·다시 이어하기](https://github.com/delta-society/medit-sparker-discovery/blob/main/docs/plugin-guide.md)
+
+운영진: [배포 기준](docs/distribution.md) · [Camp 운영·복구](camp/README.md) · [별도 교육 지원 센서](sensor/README.md)
