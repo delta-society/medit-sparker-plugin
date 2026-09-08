@@ -34,3 +34,5 @@ Linux Claude Code 2.1.263의 빈 설정 디렉터리에서 공통 로컬 카탈�
 - `npm test` 14 PASS, 두 매니페스트 검증과 두 저장소 `git diff --check` PASS.
 
 위 결과는 공개 전환 전의 로컬 카탈로그 검증이다. 추가로 GitHub 작업 브랜치에서도 두 플러그인을 설치했으며, 공개 main의 미인증 설치는 병합 후 확인한다. 원문 수집 활성화·실제 참가자 대화·Windows/macOS 설치 재시험은 이 변경의 검증에 포함하지 않았다.
+
+공개 작업 브랜치를 GitHub token·credential helper·추가 인증 헤더 없이 새 설정에서 등록하고 두 플러그인 설치를 확인했다. 최초 공개 CI에서 Windows 테스트 정리 중 detached worker의 cwd 잠금으로 EBUSY가 발생했다. 전달·세션 격리 검증은 유지하고 테스트 임시 폴더 삭제에만 제한된 재시도를 추가했다. 런타임 변경은 없다.
