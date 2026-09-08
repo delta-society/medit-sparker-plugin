@@ -1,0 +1,16 @@
+{
+  "name": "sparker",
+  "owner": {
+    "name": "Delta Society"
+  },
+  "plugins": [
+    {
+      "name": "sparker-camp",
+      "source": "./",
+      "description": "Camp session binding and durable conversation collection"
+    }
+  ],
+  "metadata": {
+    "description": "Sparker Camp participant tools"
+  }
+}

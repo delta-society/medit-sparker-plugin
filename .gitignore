@@ -1,0 +1,5 @@
+node_modules/
+.sparker-camp/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
