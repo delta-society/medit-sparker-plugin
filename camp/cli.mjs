@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync,existsSync,realpathSync} from 'node:fs';
 import {homedir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -22,14 +22,14 @@ try{
   queue.db.exec('CREATE TABLE IF NOT EXISTS host_sessions(session TEXT PRIMARY KEY,cwd TEXT NOT NULL,transcript TEXT NOT NULL); CREATE TABLE IF NOT EXISTS host_agents(session TEXT NOT NULL,agent TEXT NOT NULL,binding TEXT NOT NULL,ended INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(session,agent)); CREATE TABLE IF NOT EXISTS pending_agent_stops(session TEXT NOT NULL,agent TEXT NOT NULL,binding TEXT NOT NULL,path TEXT NOT NULL,PRIMARY KEY(session,agent))');
   if(command==='start'){
    const [session,week,phase]=args;
-   const host=queue.db.prepare('SELECT * FROM host_sessions WHERE session=? AND cwd=?').get(session,process.cwd());
+   const host=queue.db.prepare('SELECT * FROM host_sessions WHERE session=? AND cwd=?').get(session,realpathSync(process.cwd()));
    if(!host)throw Error('Host session hook has not registered the transcript');
    const binding=queue.bind({session,cwd:process.cwd(),week:Number(week),phase,transcript:host.transcript});
    console.log(JSON.stringify({binding_id:binding,local_binding:true,server_received:false}));wake();
   }else if(command==='hook'){
    const input=readFileSync(0,'utf8');if(Buffer.byteLength(input)>1048576)throw Error('Hook too large');
    const event=JSON.parse(input);
-   if(typeof event.session_id==='string'&&typeof event.cwd==='string'&&typeof event.transcript_path==='string')queue.db.prepare('INSERT OR REPLACE INTO host_sessions VALUES(?,?,?)').run(event.session_id,event.cwd,event.transcript_path);
+   if(typeof event.session_id==='string'&&typeof event.cwd==='string'&&typeof event.transcript_path==='string')queue.db.prepare('INSERT OR REPLACE INTO host_sessions VALUES(?,?,?)').run(event.session_id,realpathSync(event.cwd),event.transcript_path);
    const binding=queue.binding(event.session_id,event.cwd);
    if(binding){
     const capture=(path,options)=>{try{queue.capture(binding.id,path,options);}catch{}};
