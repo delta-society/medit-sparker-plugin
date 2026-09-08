@@ -10,14 +10,14 @@
         "source": "git-subdir",
         "url": "https://github.com/delta-society/medit-sparker-discovery.git",
         "path": "plugin",
-        "sha": "b580234ea123cb4648482d3a47c8159082995425"
+        "sha": "3d7163ada57fea69f41c9a4b15094f9ac650f620"
       },
-      "description": "온보딩·Week 1·기획서·선택형 PDF·과제 제출 준비 (0.6.1)"
+      "description": "처음 시작·실습 재개·업무 기획·제출 준비 (0.7.0)"
     },
     {
       "name": "sparker-camp",
       "source": "./",
-      "description": "Camp session binding and durable conversation collection"
+      "description": "캠프 시작·계정 연결·기록 상태 안내 (0.2.0)"
     }
   ],
   "metadata": {
