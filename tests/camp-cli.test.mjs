@@ -1,4 +1,6 @@
 import test from 'node:test';
+import * as awaitFs from 'node:fs';
+const mkdirForTest=awaitFs.mkdirSync;
 import assert from 'node:assert/strict';
 import {mkdtempSync,writeFileSync,appendFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
@@ -42,4 +44,14 @@ test('new unbound host session resumes old durable pending without collecting th
   const deadline=Date.now()+15000;while(q.pending().length&&Date.now()<deadline)await delay(50);assert.equal(q.pending().length,0);assert.equal(q.db.prepare('SELECT count(*) n FROM bindings').get().n,1);
   while(q.db.prepare("SELECT count(*) n FROM sqlite_master WHERE name='worker'").get().n&&q.db.prepare('SELECT count(*) n FROM worker').get().n&&Date.now()<deadline)await delay(50);
  }finally{q.close();if(server){server.closeAllConnections();await new Promise(r=>server.close(r));}rmSync(root,{recursive:true,force:true});}
+});
+
+test('host cwd alias and canonical process cwd resolve to the same explicit session',()=>{
+ const {symlinkSync,realpathSync}=awaitFs;
+ const root=mkdtempSync(join(tmpdir(),'camp-cwd-')),actual=join(root,'actual'),alias=join(root,'alias'),spool=join(root,'spool'),session=randomUUID(),cli=resolve('camp/cli.mjs');
+ try{mkdirForTest(actual);symlinkSync(actual,alias,process.platform==='win32'?'junction':'dir');const transcript=join(actual,'session.jsonl');writeFileSync(transcript,'TEST ONLY before');
+ const env={...process.env,CAMP_SPOOL_DIR:spool},hook=spawnSync(process.execPath,[cli,'hook'],{cwd:actual,env,input:JSON.stringify({session_id:session,cwd:alias,transcript_path:transcript,hook_event_name:'SessionStart'}),encoding:'utf8'});assert.equal(hook.status,0);
+ const start=spawnSync(process.execPath,[cli,'start',session,'1','class'],{cwd:realpathSync(actual),env,encoding:'utf8'});assert.equal(start.status,0,start.stderr);
+ const q=new Queue(spool);assert.equal(q.db.prepare('SELECT count(*) n FROM bindings').get().n,1);q.close();
+ }finally{rmSync(root,{recursive:true,force:true});}
 });
