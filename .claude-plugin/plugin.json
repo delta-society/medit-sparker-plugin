@@ -1,7 +1,7 @@
 {
   "name": "sparker-camp",
-  "version": "0.2.0",
-  "description": "Sparker 실습 시작·계정 연결·기록 상태 안내",
+  "version": "0.3.0",
+  "description": "Sparker 실습 시작·계정 연결·기록 상태·준비 진단",
   "author": {
     "name": "Delta Society"
   }

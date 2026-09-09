@@ -45,3 +45,28 @@ node camp/cli.mjs worker
 - `npm test`: 합성 원문으로 큐·ACK·교체/누락·훅 순서·도움 이력 검증.
 - Windows/macOS CI는 `tests/camp-*.test.mjs`를 실행한다. 합성 훅 테스트를 실제 Claude/회사 PC 인수로 표시하지 않는다.
 - `node scripts/test-camp-claude.mjs --run-real-claude`: 현재 사용자의 실제 Claude 인증으로 **합성** 세션을 만들고 호스트 원문과 spool 바이트를 대조한다. 명시적으로 실행하는 운영자 검증이며 CI에서 자동 실행하지 않는다.
+
+### 명시적 준비 상태 재확인
+
+참가자가 `/sparker-camp:readiness`를 요청하면 이미 연결한 현재 Camp 세션에서만 `node camp/cli.mjs readiness SESSION`을 실행한다. 훅·시작 스킬은 이 진단을 자동 실행하지 않는다. Claude CLI `--version`, `auth status --json`을 각 5초·16 KiB로 제한하고 이메일·조직·키·원문 오류를 버린다. 비로그인 exit 1 JSON도 boolean 관측으로 처리한다. 구독 필드가 없는 CLI는 `unknown`이며 로그인으로 구독을 추정하지 않는다.
+
+보고서는 기존 0600 Camp SQLite에 세션별 최신 한 건만 저장하고 기존 owner/camp/binding의 report.readiness로 전달한다. 별도 토큰·수신 API·보존 정책을 만들지 않는다. 접근·보존은 기존 Camp 계약을 따른다. 필드는 schemaVersion, reportId, observedAt, cliVersion, pluginVersion, cliAvailable, loggedIn, authMethod, subscriptionType, firstRunObserved, probeStatus뿐이다. firstRunObserved는 명시적 시작 이후 주 대화의 로컬 수집 바이트 관측으로, 성공한 모델 답변이나 사람의 완료 판정을 의미하지 않는다. CLI 출력의 queued는 서버 수신 확인이 아니다.
+
+### 0.3.0 적용 순서와 재확인
+
+운영 콘솔의 선택적 `report.readiness` 수신·조회 지원을 먼저 배포한다. 구버전 report는 readiness 필드 없이 계속 정상 수신하며, 새 진단 보고도 기존 sequence/idempotency 계약을 따른다. 이후 이 플러그인 0.3.0을 배포한다. 참가자 설치본을 운영자가 강제로 실행하거나 업데이트하지 않는다.
+
+참가자는 기존 설치 창구에서 다음 명령을 직접 실행한다.
+
+```sh
+claude plugin marketplace update sparker
+claude plugin update sparker-camp@sparker
+```
+
+Claude Code를 완전히 종료하고 다시 열어 `/plugin`에서 `sparker-camp` 0.3.0을 확인한다. 기존 계정 연결과 로컬 큐를 삭제하거나 재가입하지 않는다. `/sparker-camp:start`로 현재 수업/과제 활동이 연결된 상태를 확인한 다음 `/sparker-camp:readiness`를 명시 실행한다. 운영진은 해당 인물의 ‘플러그인 준비 근거’에서 진단 시각·CLI 버전·플러그인 버전·보고 ID와 서버 수신을 확인한다. queued만으로 완료라 알리지 않는다.
+
+CLI가 구독 유형을 제공하지 않으면 unknown이 정상 결과다. 운영자가 참가자와 Claude의 구독 화면을 함께 확인하고 콘솔의 기존 구독 관문에 판단을 남긴다. 계정 이메일이나 결제 화면을 채팅·Git·로그에 복제하지 않는다.
+
+문제가 생기면 새 readiness 명령 실행을 중지하고 기존 보고·과제 수집은 유지한다. 이미 새 필드가 전송 중인 기기가 있으면 서버의 선택적 필드 수신을 먼저 제거하지 않는다(그 기기의 전체 report가 거부될 수 있다). 서버는 이전·새 report를 모두 수락하도록 유지한 채 진단 표시만 비활성화하거나 이전 플러그인으로 되돌리고, 로컬 큐 및 기존 계정 연결을 보존한다. 구버전 설치 캐시를 수동 삭제하지 않는다.
+
+플러그인 업데이트 후 Claude를 다시 여는 것만으로 이미 분리 실행 중인 이전 worker가 교체되지는 않는다. 명시적 `readiness` 명령은 진단을 저장한 뒤 같은 spool의 worker 임대 토큰을 폐기하고 새 worker를 깨운다. 이전 worker는 진행 중 요청을 마친 뒤 토큰 확인에서 종료하며, 오래된 heartbeat·정리는 새 worker의 토큰을 덮거나 삭제하지 못한다. OS 프로세스 종료나 다른 spool 조작은 하지 않는다. 일반 훅은 이 인계를 실행하지 않는다.

@@ -1,3 +1,4 @@
+import {queuedReadiness} from './readiness.mjs';
 import {createHash} from 'node:crypto';
 import {readFileSync,writeFileSync,mkdirSync,renameSync} from 'node:fs';
 import {join} from 'node:path';
@@ -41,7 +42,8 @@ export async function report(queue,config,send=request){
    const previous=queue.db.prepare('SELECT * FROM report_sequences WHERE binding=?').get(binding.id),sequence=(previous?.sequence||0)+1;
    const pending=queue.db.prepare("SELECT count(*) AS chunks,coalesce(sum(json_extract(payload,'$.end_offset')-json_extract(payload,'$.start_offset')),0) AS bytes FROM chunks WHERE binding=? AND receipt IS NULL").get(binding.id);
    const sources=queue.db.prepare('SELECT stream,generation,offset,final FROM sources WHERE binding=? LIMIT 257').all(binding.id);
-   const payload={binding_id:binding.id,sequence,report:{pending_chunks:pending.chunks,pending_bytes:pending.bytes,capture_error:!!binding.error||sources.length>256||queue.db.prepare('SELECT count(*) AS n FROM pending_agent_stops WHERE binding=?').get(binding.id).n>0||(!!binding.closed&&queue.db.prepare('SELECT count(*) AS n FROM host_agents WHERE binding=? AND ended=0').get(binding.id).n>0),closed:!!binding.closed,sources:sources.slice(0,256).map(s=>({stream_id:s.stream,generation:s.generation,observed_offset:s.offset,final_requested:!!s.final}))}};
+   const readiness=queuedReadiness(queue,binding.id,config);
+   const payload={binding_id:binding.id,sequence,report:{...(readiness?{readiness}:{}),pending_chunks:pending.chunks,pending_bytes:pending.bytes,capture_error:!!binding.error||sources.length>256||queue.db.prepare('SELECT count(*) AS n FROM pending_agent_stops WHERE binding=?').get(binding.id).n>0||(!!binding.closed&&queue.db.prepare('SELECT count(*) AS n FROM host_agents WHERE binding=? AND ended=0').get(binding.id).n>0),closed:!!binding.closed,sources:sources.slice(0,256).map(s=>({stream_id:s.stream,generation:s.generation,observed_offset:s.offset,final_requested:!!s.final}))}};
    const signature=createHash('sha256').update(JSON.stringify(payload.report)).digest('hex');
    if(previous?.last_hash===signature&&((payload.report.closed&&!payload.report.capture_error&&!pending.chunks)||Date.now()-previous.sent_at<60000))return null;
    queue.db.prepare('INSERT INTO report_sequences(binding,sequence) VALUES(?,?) ON CONFLICT(binding) DO UPDATE SET sequence=excluded.sequence').run(binding.id,sequence);

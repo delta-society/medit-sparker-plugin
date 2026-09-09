@@ -17,7 +17,7 @@
     {
       "name": "sparker-camp",
       "source": "./",
-      "description": "캠프 시작·계정 연결·기록 상태 안내 (0.2.0)"
+      "description": "캠프 시작·계정 연결·기록 상태·명시 준비 진단 (0.3.0)"
     }
   ],
   "metadata": {

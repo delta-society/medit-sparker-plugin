@@ -7,6 +7,7 @@ import {randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {spawn} from 'node:child_process';
 import {Queue} from './queue.mjs';
+import {captureReadiness,handoverReadinessWorker} from './readiness.mjs';
 import {suggestHelp} from './help.mjs';
 import {participantStatus} from './status.mjs';
 import {enroll,flush} from './transport.mjs';
@@ -82,11 +83,15 @@ try{
   }else if(command==='help'){
    const [session,issue,attempts,severity]=args,binding=queue.binding(session,process.cwd());
    console.log(JSON.stringify(binding?suggestHelp(queue,binding.id,{issue,attempts:Number(attempts),serious:severity==='serious'}):{suggest:false}));
+  }else if(command==='readiness'){
+   await captureReadiness(queue,directory,args[0],process.cwd());
+   handoverReadinessWorker(queue);
+   console.log(JSON.stringify({readiness:'queued',server_received:false}));wake();
   }else if(command==='participant-status'){
    console.log(JSON.stringify(participantStatus(queue,directory,args[0],process.cwd())));
   }else if(command==='status'){
    console.log(JSON.stringify({bindings:queue.db.prepare('SELECT id,session,closed,error FROM bindings').all(),pending_chunks:queue.db.prepare('SELECT count(*) AS n FROM chunks WHERE receipt IS NULL').get().n}));
-  }else throw Error('Usage: camp start SESSION WEEK class|homework; enroll ORIGIN < code; status; worker');
+  }else throw Error('Usage: camp start SESSION WEEK class|homework; enroll ORIGIN < code; status; readiness SESSION; worker');
  }
 }catch(error){
  // Hooks must never stop Claude or print transcript/token values.
