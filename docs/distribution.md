@@ -8,6 +8,14 @@
 - Camp 0.2.0: 공통 마켓플레이스와 같은 커밋의 루트 플러그인. 시작·계정 연결·현재 세션 상태를 안내하며 기존 원문 수집 계약은 유지한다.
 - Discovery main의 변경은 자동으로 참가자 배포본이 되지 않는다. 다음 배포는 검증된 커밋·플러그인 버전을 확인한 후 이 카탈로그의 SHA를 변경한다.
 
+## 2주차 변경 후보 — main 미반영
+
+Camp 0.3.0은 `start`에서 2주차를 Discovery의 `week2`로 연결한다. 기존 수집/동의/계정 계약을 유지한다. 구현 소스·검토 패키지 준비와 참가자 배포는 별개이며, 아래 기존 공개 카탈로그 고정 SHA는 main 반영 승인 전까지 바꾸지 않는다.
+
+`python3 scripts/build-week2-preview.py --discovery /absolute/path/to/discovery --output /new/output/path`로 로컬 검토 marketplace와 단독 ZIP 두 개를 만든다. 출력 폴더는 새 경로여야 한다. Discovery는 기존 명시 목록 빌더를 사용하고 Camp는 추적 중인 배포 폴더만 담는다. 실제 설치 시험에서는 별도 `CLAUDE_CONFIG_DIR`로 기존 사용자 설정·Camp 수집과 분리한다.
+
+macOS Claude Code 2.1.205에서 Camp 0.3.0의 실제 설치·enabled 및 매니페스트/시작 스킬/CLI/훅 바이트 일치 확인. Node 19개 회귀 통과. 실제 모델 대화는 준비된 API 계정의 `Credit balance is too low`로 미실행이며 설치·도우미 통과로 대체하지 않는다. main 반영 승인 이후 Discovery commit을 먼저 push/readback하고, 그 전체 SHA를 아래 카탈로그에 고정한 다음 공통 배포본을 반영한다.
+
 ## 새 버전 배포
 
 1. 원본 저장소의 main·매니페스트 버전·검증 결과를 확인한다.
