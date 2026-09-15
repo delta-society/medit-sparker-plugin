@@ -34,6 +34,15 @@ claude plugin install sparker-camp@sparker-week2-preview
 Claude Code를 실습 폴더에서 다시 열고 `/sparker-camp:start 2주차 수업`을 입력합니다. 기록 동의·계정 연결은 기존 절차를 따릅니다.
 Camp 기록 없이 기능만 검토하려면 Discovery ZIP만 `claude --plugin-dir /absolute/path/to/sparker-discovery.zip`로 열고 `/sparker-discovery:week2`를 사용합니다.
 
+## 주차별 시작과 제출 준비
+
+| 주차 | 시작 | 제출 준비 | 결과물 |
+|---|---|---|---|
+| 1주차 | `/sparker-discovery:week1` | `/sparker-discovery:week1-submit` | 기획서 ZIP |
+| 2주차 | `/sparker-discovery:week2` | `/sparker-discovery:week2-submit` | 코드·실행 안내·검증 기록 |
+
+기존 `/sparker-discovery:submit`은 주차를 확인해 연결하는 호환 명령입니다. 2주차 작업을 1주차로 제출하지 않습니다.
+
 기획서 읽기 → 첫 기능 선택 → 실제 실행 → 수정 → 검증·재개를 지원합니다. 제작 기록은 확정 기획서와 별도로 보존합니다. 제작 결과 ZIP은 선택한 파일만 담는 검토용이며 앱 업로드 완료를 뜻하지 않습니다.
 
 검증 한계: 실제 Claude 모델 대화는 검증 계정의 API 잔액 부족으로 미실행입니다. 로컬 도우미/설치 시험 결과와 혼동하지 않습니다. 참가자용 main 배포는 별도 확인 전입니다.

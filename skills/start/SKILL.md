@@ -32,6 +32,10 @@ If `connection_saved` is false, explain once: “계정 연결이 아직 필요�
 
 For a pending/awaiting receipt status, use the helper's message. For capture attention or failure, say what needs checking and allow the exercise to continue; do not promise bytes were saved when status is unavailable. Expired connection cannot be diagnosed from local credential presence; suggest terminal reconnection if the instructor confirms an authentication issue.
 
+## Week-specific submission
+
+When the participant asks to submit or prepare submission, keep the explicitly selected week: week 1 invokes `sparker-discovery:week1-submit` (기획서 ZIP); week 2 invokes `sparker-discovery:week2-submit` (코드·실행 안내·검증 기록 준비). Pass known week/phase and actual recording status. Never send week 2 to the old Week1 plan submission flow. If week is unknown, ask only which week, once. Do not use file presence or current date to silently choose. Week 3–4 follow instructor instructions without inventing a submission skill. Preparing files does not mean uploading, and Camp record receipt is not assignment submission.
+
 ## Continue the exercise
 
 For week 1, use the host Skill tool to invoke `sparker-discovery:onboarding` for first-time setup, or `sparker-discovery:week1` when the participant says setup is complete or wants to resume. Let the Discovery skill check its saved progress; do not invent progress or read arbitrary other plugin directories. If setup status is unknown, onboarding checks readiness. Tell Discovery the confirmed week/phase and whether this is a resume request. Avoid asking the participant to understand two plugin names.
