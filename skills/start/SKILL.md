@@ -1,7 +1,7 @@
 ---
 name: start
 description: 캠프 수업이나 과제를 시작하거나 이어서 합니다. 계정 연결과 기록 상태를 확인하고 실습으로 안내합니다.
-argument-hint: "1주차 수업 | 1주차 과제"
+argument-hint: "1주차 수업 | 2주차 수업 | 2주차 과제"
 ---
 
 ## Participant request
@@ -36,6 +36,6 @@ For a pending/awaiting receipt status, use the helper's message. For capture att
 
 For week 1, use the host Skill tool to invoke `sparker-discovery:onboarding` for first-time setup, or `sparker-discovery:week1` when the participant says setup is complete or wants to resume. Let the Discovery skill check its saved progress; do not invent progress or read arbitrary other plugin directories. If setup status is unknown, onboarding checks readiness. Tell Discovery the confirmed week/phase and whether this is a resume request. Avoid asking the participant to understand two plugin names.
 
-If the host cannot invoke that skill, offer the single concrete command `/sparker-discovery:onboarding` or `/sparker-discovery:week1` as appropriate. If unavailable because Discovery is not installed, give `/plugin install sparker-discovery@sparker` and ask them to reopen Claude Code. For weeks 2–4, continue the instructor's supplied activity; do not claim a week-specific lesson exists without seeing one.
+If the host cannot invoke that skill, offer the single concrete command `/sparker-discovery:onboarding` or `/sparker-discovery:week1` as appropriate. If unavailable because Discovery is not installed, give `/plugin install sparker-discovery@sparker` and ask them to reopen Claude Code. For week 2, invoke `sparker-discovery:week2` with the host Skill tool. Pass the confirmed week/phase, recording status (including any failure), resume request, and any participant-provided plan path/desired first feature. Do not ask them to re-plan or repeat information they already gave. Week 2 handles reading the plan, implementing, running, changing and verifying the program; Camp does not implement that flow itself. If invocation is unavailable, give `/sparker-discovery:week2`. If that skill is missing from an older Discovery install, give `/plugin marketplace update sparker` followed by `/plugin update sparker-discovery@sparker` and reopening Claude Code; do not pretend the lesson ran. For weeks 3–4, continue the instructor's supplied activity; do not claim a week-specific lesson exists without seeing one.
 
 During class, after at least three observed unsuccessful attempts at the same blockage, call `node <resolved-root>/camp/cli.mjs help SESSION ISSUE ATTEMPTS SEVERITY`. Use a stable short semantic ISSUE such as `github-login-permission`. During homework, only do this for a serious blockage preventing progress and use severity `serious`; otherwise use `normal`. Suggest operator help only if the helper returns `suggest: true`, using its message once. Never send alerts or messages to operators.
