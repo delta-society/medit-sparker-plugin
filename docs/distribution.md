@@ -1,16 +1,16 @@
 # 참가자 배포 기준
 
-참가자 설치 창구는 `delta-society/medit-sparker-plugin`, 마켓플레이스 이름은 `sparker` 하나다. 교육 기능 소스는 `medit-sparker-discovery`, Camp 수집 소스는 이 저장소에서 관리한다. 참가자 설치 이력은 없다는 사용자 확인에 따라 이전/삭제 절차는 제공하지 않는다.
+참가자 설치 창구는 `delta-society/medit-sparker-plugin`, 마켓플레이스 이름은 `sparker` 하나다. 교육 기능 소스는 `medit-sparker-discovery`, Camp 수집 소스는 이 저장소에서 관리한다. 기존 설치자는 README의 marketplace refresh와 두 플러그인 update를 실행한 후 재시작한다. 신규 설치와 업데이트는 별도로 검증한다.
 
 ## 배포 대상
 
-- Discovery 0.7.0: `3d7163ada57fea69f41c9a4b15094f9ac650f620`의 `plugin/`을 `git-subdir` + 전체 SHA로 고정한다. 참가자 시작은 `/sparker-camp:start`로 연결한다.
-- Camp 0.2.0: 공통 마켓플레이스와 같은 커밋의 루트 플러그인. 시작·계정 연결·현재 세션 상태를 안내하며 기존 원문 수집 계약은 유지한다.
+- Discovery 0.11.0: `e2514008d13f6e00350ff1ecec82ad56def87eb8`의 `plugin/`을 `git-subdir` + 전체 SHA로 고정한다. 참가자 시작은 `/sparker-camp:start`로 연결한다.
+- Camp 0.5.1: 공통 마켓플레이스와 같은 커밋의 루트 플러그인. 시작·계정 연결·현재 세션 상태를 안내하며 기존 원문 수집 계약은 유지한다.
 - Discovery main의 변경은 자동으로 참가자 배포본이 되지 않는다. 다음 배포는 검증된 커밋·플러그인 버전을 확인한 후 이 카탈로그의 SHA를 변경한다.
 
-## 2주차 변경 후보 — main 미반영
+## 과거 2주차 검토 패키지 기록
 
-Camp 0.3.0은 `start`에서 2주차를 Discovery의 `week2`로 연결한다. 기존 수집/동의/계정 계약을 유지한다. 구현 소스·검토 패키지 준비와 참가자 배포는 별개이며, 아래 기존 공개 카탈로그 고정 SHA는 main 반영 승인 전까지 바꾸지 않는다.
+아래는 당시 검토 기록이며 현행 공개 상태는 위 배포 대상을 따른다. Camp 0.3.0은 `start`에서 2주차를 Discovery의 `week2`로 연결한다. 기존 수집/동의/계정 계약을 유지한다. 구현 소스·검토 패키지 준비와 참가자 배포는 별개이며, 아래 기존 공개 카탈로그 고정 SHA는 main 반영 승인 전까지 바꾸지 않는다.
 
 `python3 scripts/build-week2-preview.py --discovery /absolute/path/to/discovery --output /new/output/path`로 로컬 검토 marketplace와 단독 ZIP 두 개를 만든다. 출력 폴더는 새 경로여야 한다. Discovery는 기존 명시 목록 빌더를 사용하고 Camp는 추적 중인 배포 폴더만 담는다. 실제 설치 시험에서는 별도 `CLAUDE_CONFIG_DIR`로 기존 사용자 설정·Camp 수집과 분리한다.
 
