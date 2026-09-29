@@ -29,7 +29,7 @@ test('participant routing points to installed week2 while retaining week1 and co
  const skill=readFileSync('skills/start/SKILL.md','utf8');
  assert.match(skill,/sparker-discovery:week2/);
  assert.match(skill,/sparker-discovery:week1/);
- assert.match(skill,/For weeks 3–4/);
+ assert.match(skill,/For week 4/);
  assert.match(skill,/recording status \(including any failure\)/);
  assert.match(skill,/do not bind until clarified/);
 });
