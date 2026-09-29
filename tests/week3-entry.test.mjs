@@ -18,6 +18,11 @@ test('week3 class/homework resumes and never switches another bound week',()=>{
   assert.equal(JSON.parse(run(['participant-status',id]).stdout).week,3);
  }}finally{rmSync(root,{recursive:true,force:true});}
 });
+test('week3 submission stays in terminal after initial connection without Camp credentials',()=>{
+ const s=readFileSync('skills/start/SKILL.md','utf8');
+ for(const word of ['sparker-discovery:week3-submit','known evaluation record and reviewed PDF path','existing participant app browser login only for initial device connection','without opening a browser or requesting web confirmation','do not route ordinary submissions to a web file picker','verifies server receipt','Participant intent to submit is required','Camp account connection and token are not used','/reload-plugins']) assert.ok(s.includes(word),word);
+ assert.ok(!s.includes('Do not invent a week3-submit skill'));
+});
 test('week3 entry preserves consent, known context and incomplete export',()=>{
  const s=readFileSync('skills/start/SKILL.md','utf8');
  for(const word of ['sparker-discovery:week1','sparker-discovery:week2','sparker-discovery:week3','do not bind until clarified','including incomplete and blocked work','/plugin update sparker-camp@sparker','without editing product code'])assert.ok(s.includes(word),word);
