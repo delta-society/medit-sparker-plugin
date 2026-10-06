@@ -78,7 +78,7 @@ test('Camp manifest and same-repo marketplace entry agree on feature version', (
  const marketplace = JSON.parse(readFileSync('.claude-plugin/marketplace.json', 'utf8'));
  const camp = marketplace.plugins.find(p => p.name === 'sparker-camp');
  assert.equal(manifest.name, 'sparker-camp');
- assert.equal(manifest.version, '0.6.0');
+ assert.equal(manifest.version, '0.7.0');
  assert.equal(camp.source, './');
  assert.ok(camp.description.includes('(' + manifest.version + ')'));
  assert.ok(camp.description.includes('1–4주차'));

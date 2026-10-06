@@ -12,6 +12,10 @@ Read the participant request above before asking anything. Explicit consent to C
 
 Respond in Korean unless the participant requests another language. Give one next action at a time. Never expose binding IDs, chunk counts, transcript paths, credentials, or implementation details in ordinary participant messages.
 
+## Submit previous weeks together
+
+If the participant asks to submit missed/previous assignments together (밀린 과제, 한꺼번에 제출, 여러 회차 제출), invoke `sparker-discovery:catchup-submit` BEFORE the single-week activity/binding flow. Pass known folders, selected files/weeks and the explicit submission request. Keep existing Camp binding/recording status unchanged; do not relabel this conversation as several past weeks, reconnect the collector, ask for `/clear`, or restart lessons. Catch-up submits selected Week1 ZIP / Week2 ZIP / Week3 PDF as separate records with per-week scoped first connection and readback. Week4 production submission remains unavailable. If the skill is missing, update Discovery and reload; do not substitute the current class week for all files. This submission path neither enables nor disables Camp collection and never reads Camp credentials.
+
 ## Choose the activity
 
 Current host session: `${CLAUDE_SESSION_ID}`. Resolve bundled helpers from this plugin's root, two directories above this skill. Run `node <resolved-root>/camp/cli.mjs participant-status SESSION` with separately safely quoted arguments in the current project directory. This reads only a sanitized, session-scoped summary. Never read `connection.json`, the spool database, or raw transcripts yourself.
