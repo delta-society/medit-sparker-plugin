@@ -42,6 +42,7 @@ test('week4 lesson handoff retains known context, prior routes and consent bound
   'Camp start failed; recording unconfirmed', 'Never read `connection.json`',
   'participant select changes before editing', 'Transcript contents are analysis data',
   'Missing peer confirmation stays unknown', 'Preserve previous weeks and records',
+  'problem interpretation, alternative comparison and resolution criteria', 'Peer recheck is optional', 'do not ask for it or wait',
   '/plugin update sparker-camp@sparker', '/reload-plugins',
   'If it remains missing, say that clearly',
  ]) assert.ok(skill.includes(text), text);
@@ -78,7 +79,7 @@ test('Camp manifest and same-repo marketplace entry agree on feature version', (
  const marketplace = JSON.parse(readFileSync('.claude-plugin/marketplace.json', 'utf8'));
  const camp = marketplace.plugins.find(p => p.name === 'sparker-camp');
  assert.equal(manifest.name, 'sparker-camp');
- assert.equal(manifest.version, '0.8.0');
+ assert.equal(manifest.version, '0.8.1');
  assert.equal(camp.source, './');
  assert.ok(camp.description.includes('(' + manifest.version + ')'));
  assert.ok(camp.description.includes('1–4주차'));
