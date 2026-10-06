@@ -10,9 +10,9 @@
         "source": "git-subdir",
         "url": "https://github.com/delta-society/medit-sparker-discovery.git",
         "path": "plugin",
-        "sha": "b90b2075713b9e3c9c494210367d99db91cb672a"
+        "sha": "a2979798367650b107ecec690548bfbd9ee6e562"
       },
-      "description": "1주차 기획·2주차 구현·3주차 평가·4주차 피드백 반영과 코드/PDF 묶음 (0.13.0; 4주차 운영 접수 미배포)"
+      "description": "1주차 기획·2주차 구현·3주차 평가·4주차 피드백 반영과 코드/PDF 묶음 (0.13.1; 4주차 운영 접수 미배포)"
     },
     {
       "name": "sparker-camp",
