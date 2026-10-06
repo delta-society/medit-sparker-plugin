@@ -51,16 +51,16 @@ test('week4 lesson handoff retains known context, prior routes and consent bound
  assert.ok(!skill.includes("For week 4, continue the instructor's supplied activity"));
 });
 
-test('week4 submission stays local, requires confirmed bundle and never borrows other credentials', () => {
+test('week4 submits the confirmed bundle with separate consent and credentials', () => {
  for (const text of [
   'For week 4 submission, invoke `sparker-discovery:week4-submit`',
   'latest participant-confirmed final-code-and-report.zip',
   'return to `sparker-discovery:week4`', 'Final review is not external submission consent',
-  'Week 4 production submission is NOT deployed and remains blocked',
-  'Only an explicitly approved isolated local test',
+  'Week 4 production submission is available',
+  'a separate first-time week-4 connection consent',
   'Never fall back to week 3, a web upload or another assignment',
   'never reuse or expand week 3, collector or Camp credentials for week 4',
-  'Do not remove the local-test restriction',
+  'Use loopback and --local-test only',
   'if still absent, report the missing skill without claiming submission',
   'Preparing files does not mean uploading',
  ]) assert.ok(skill.includes(text), text);
@@ -69,7 +69,7 @@ test('week4 submission stays local, requires confirmed bundle and never borrows 
   const doc = readFileSync(path, 'utf8');
   assert.ok(doc.includes('/sparker-camp:start 4주차 수업'), path);
   assert.ok(doc.includes('/sparker-discovery:week4-submit'), path);
-  assert.ok(doc.includes('4주차 운영 제출은 미배포이며 차단 상태'), path);
+  assert.ok(doc.includes('4주차 운영 제출을 지원'), path);
  }
 });
 
@@ -78,7 +78,7 @@ test('Camp manifest and same-repo marketplace entry agree on feature version', (
  const marketplace = JSON.parse(readFileSync('.claude-plugin/marketplace.json', 'utf8'));
  const camp = marketplace.plugins.find(p => p.name === 'sparker-camp');
  assert.equal(manifest.name, 'sparker-camp');
- assert.equal(manifest.version, '0.7.0');
+ assert.equal(manifest.version, '0.8.0');
  assert.equal(camp.source, './');
  assert.ok(camp.description.includes('(' + manifest.version + ')'));
  assert.ok(camp.description.includes('1–4주차'));
